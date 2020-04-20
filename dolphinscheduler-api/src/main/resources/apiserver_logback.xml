@@ -19,7 +19,7 @@
 <!-- Logback configuration. See http://logback.qos.ch/manual/index.html -->
 <configuration scan="true" scanPeriod="120 seconds">
 	<logger name="org.apache.zookeeper" level="WARN"/>
- 	<logger name="org.apache.hbase" level="WARN"/>
+        <logger name="org.apache.hbase" level="WARN"/>
  	<logger name="org.apache.hadoop" level="WARN"/>
 
 	<property name="log.base" value="logs" />
@@ -56,5 +56,7 @@
 
 	<root level="INFO">
 		<appender-ref ref="APISERVERLOGFILE" />
+        <!-- 增加日志到控制台-->
+        <appender-ref ref="STDOUT"/>
 	</root>
 </configuration>

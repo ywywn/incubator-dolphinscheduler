@@ -14,9 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+<!--任务实例详细页面信息-->
 <template>
   <div class="home-main index-model">
+    <!-- 查看变量 -->
     <m-variable></m-variable>
+    <!-- 启动参数 -->
     <m-starting-param></m-starting-param>
     <m-dag v-if="!isLoading" :type="'instance'"></m-dag>
     <m-spin :is-spin="isLoading"></m-spin>

@@ -81,6 +81,7 @@ public class MasterServer extends AbstractServer {
      * @param args arguments
      */
     public static void main(String[] args) {
+        System.setProperty("spring.profiles.active","master");
         SpringApplication.run(MasterServer.class, args);
 
     }

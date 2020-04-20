@@ -71,6 +71,7 @@
     position: relative;
     z-index: 9;
   }
+  // 节点图标
   .icos-SHELL {
     background: url("../img/toolbar_SHELL.png") no-repeat 50% 50%;
   }
@@ -100,6 +101,9 @@
   }
   .icos-HTTP {
     background: url("../img/toobar_HTTP.png") no-repeat 50% 50%;
+  }
+  .icos-KAFKA {
+    background: url("../img/toobar_KAFKA.png") no-repeat 50% 50%;
   }
   .toolbar {
     width: 60px;

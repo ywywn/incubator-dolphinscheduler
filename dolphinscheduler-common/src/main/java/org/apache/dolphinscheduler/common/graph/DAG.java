@@ -39,16 +39,19 @@ public class DAG<Node, NodeInfo, EdgeInfo> {
 
   /**
    * node map, key is node, value is node information
+   * 节点图，key为节点，value为节点信息
    */
   private volatile Map<Node, NodeInfo> nodesMap;
 
   /**
    * edge map. key is node of origin;value is Map with key for destination node and value for edge
+   * value是Map，其中key为目标节点，value为边
    */
   private volatile Map<Node, Map<Node, EdgeInfo>> edgesMap;
 
   /**
    * reversed edge set，key is node of destination, value is Map with key for origin node and value for edge
+   * value是Map，其中key代表原始节点，value代表边
    */
   private volatile Map<Node, Map<Node, EdgeInfo>> reverseEdgesMap;
 

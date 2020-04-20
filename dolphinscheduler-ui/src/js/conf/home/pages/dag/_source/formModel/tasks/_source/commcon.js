@@ -233,11 +233,21 @@ const positionList = [
   }
 ]
 
+// Kafka 参数
+
+const kafkaList =[
+  {
+    id: 'KAFKA',
+    code: "Kafka"
+  }
+]
+
 export {
   cycleList,
   dateValueList,
   typeList,
   directList,
   sqlTypeList,
-  positionList
+  positionList,
+  kafkaList
 }

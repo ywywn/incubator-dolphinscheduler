@@ -238,6 +238,7 @@ let tasksState = {
  * @key key
  * @desc tooltip
  * @color color (tree and gantt)
+ * 节点类型定义
  */
 let tasksType = {
   'SHELL': {
@@ -279,6 +280,10 @@ let tasksType = {
   'HTTP': {
     desc: 'HTTP',
     color: '#E46F13'
+  },
+  'KAFKA': {
+    desc: 'KAFKA',
+    color: '#646F13'
   }
 }
 

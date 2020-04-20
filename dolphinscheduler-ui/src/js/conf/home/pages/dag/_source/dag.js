@@ -46,7 +46,7 @@ Dag.prototype.setConfig = function (o) {
 }
 
 /**
- * create dag
+ * create dag DAG界面
  */
 Dag.prototype.create = function () {
   jsPlumb.ready(() => {
@@ -55,7 +55,7 @@ Dag.prototype.create = function () {
       instance: this.instance
     })
 
-    // init event
+    // init event 节点连接逻辑判断，包括重复链接和环判断
     JSP.handleEvent()
 
     // init draggable
@@ -89,7 +89,7 @@ Dag.prototype.toolbarEvent = function ({ item, code, is }) {
 }
 
 /**
- * Echo data display
+ * Echo data display 工作流回显
  */
 Dag.prototype.backfill = function () {
   jsPlumb.ready(() => {

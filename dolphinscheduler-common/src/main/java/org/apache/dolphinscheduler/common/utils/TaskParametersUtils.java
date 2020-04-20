@@ -41,7 +41,7 @@ public class TaskParametersUtils {
   private static Logger logger = LoggerFactory.getLogger(TaskParametersUtils.class);
 
   /**
-   * get task parameters
+   * get task parameters 依据task type返回相应task参数
    * @param taskType task type
    * @param parameter parameter
    * @return task parameters

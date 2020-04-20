@@ -27,6 +27,7 @@
   import Affirm from './_source/jumpAffirm'
   import disabledState from '@/module/mixin/disabledState'
 
+  // DAG界面
   export default {
     name: 'create-index',
     data () {

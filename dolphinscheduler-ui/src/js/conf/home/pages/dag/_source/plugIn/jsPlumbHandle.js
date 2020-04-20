@@ -88,7 +88,8 @@ JSP.prototype.init = function ({ dag, instance }) {
 
   // Drag and drop
   if (this.config.isNewNodes) {
-    DragZoom.init()
+    //禁用缩放
+    // DragZoom.init()
   }
 }
 
@@ -158,7 +159,7 @@ JSP.prototype.draggable = function () {
         if (top < 25) {
           top = 25
         }
-        // Generate template node
+        // Generate template node 节点信息缓存
         $('#canvas').append(rtTasksTpl({
           id: id,
           name: id,
@@ -171,7 +172,7 @@ JSP.prototype.draggable = function () {
         // Get the generated node
         let thisDom = jsPlumb.getSelector('.statemachine-demo .w')
 
-        // Generating a connection node
+        // Generating a connection node 生成连接节点
         self.JspInstance.batch(() => {
           self.initNode(thisDom[thisDom.length - 1])
         })
@@ -255,7 +256,7 @@ JSP.prototype.initNode = function (el) {
 }
 
 /**
- * Node right click menu
+ * Node right click menu 右键事件
  */
 JSP.prototype.tasksContextmenu = function (event) {
   if (this.config.isContextmenu) {
@@ -348,7 +349,7 @@ JSP.prototype.tasksContextmenu = function (event) {
 }
 
 /**
- * Node double click event
+ * Node double click event 双击事件
  */
 JSP.prototype.tasksDblclick = function (e) {
   // Untie event
@@ -599,7 +600,7 @@ JSP.prototype.handleEventScreen = function ({ item, is }) {
   }
 }
 /**
- * save task
+ * save task 保存工作流
  * @param tasks
  * @param locations
  * @param connects
@@ -665,6 +666,9 @@ JSP.prototype.saveStore = function () {
     // Storage line dependence
     store.commit('dag/setConnects', connects)
 
+    // console.log(tasks)
+    // console.log(locations)
+    // console.log(connects)
     resolve({
       connects: connects,
       tasks: tasks,
@@ -673,15 +677,26 @@ JSP.prototype.saveStore = function () {
   })
 }
 /**
- * Event processing
+ * Event processing 事件处理
  */
 
 JSP.prototype.handleEvent = function () {
   this.JspInstance.bind('beforeDrop', function (info) {
     let sourceId = info['sourceId']// 出
     let targetId = info['targetId']// 入
+
+    //获取连线时source、target节点类型
+    let sourceType = info['connection'].source.dataset.tasksType
+    // console.log(sourceType)
+    let targetType = info['connection'].target.dataset.tasksType
+    // console.log(targetType)
+
+    //限制部分节点连接，例：禁止SHELL节点之间连接
+    if (sourceType === 'SHELL' && targetType ==='SHELL') {
+      return false
+    }
     /**
-     * Recursive search for nodes
+     * Recursive search for nodes 递归搜索节点TargetarrArr
      */
     let recursiveVal
     const recursiveTargetarr = (arr, targetId) => {
@@ -692,16 +707,21 @@ JSP.prototype.handleEvent = function () {
           recursiveTargetarr(rtTargetarrArr(arr[i]), targetId)
         }
       }
+      // console.log(recursiveVal)
       return recursiveVal
     }
 
-    // Connection to connected nodes is not allowed
+    // Connection to connected nodes is not allowed 不允许连接到已连接的节点 如a连接b，则不可再次连接a->b
     if (_.findIndex(rtTargetarrArr(targetId), v => v === sourceId) !== -1) {
       return false
     }
 
-    // Recursive form to find if the target Targetarr has a sourceId
+    // Recursive form to find if the target Targetarr has a sourceId 禁止环状工作流
+    //调用recursiveTargetarr，查询节点的targetarr字段，若存在所操作的target是source的最终根节点则不能连接
     if (recursiveTargetarr(rtTargetarrArr(sourceId), targetId)) {
+      // const tmp = rtTargetarrArr(sourceId)
+      // console.log(tmp)
+      // console.log(targetId)
       return false
     }
 

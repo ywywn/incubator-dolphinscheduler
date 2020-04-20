@@ -28,6 +28,7 @@
           <div class="title">
             <span>{{$t('View log')}}</span>
             <div class="full-screen">
+            <!--下载日志、刷新日志、全屏功能-->
               <a href="javascript:" @click="_downloadLog" data-container="body" data-toggle="tooltip" :title="$t('Download Log')">
                 <i class="ans-icon-download" style="font-size: 20px"></i>
               </a>

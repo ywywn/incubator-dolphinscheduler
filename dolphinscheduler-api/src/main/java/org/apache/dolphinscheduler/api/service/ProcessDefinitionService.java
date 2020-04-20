@@ -99,7 +99,7 @@ public class ProcessDefinitionService extends BaseDAGService {
     private WorkerGroupMapper workerGroupMapper;
 
     /**
-     * create process definition
+     * create process definition 创建工作流定义(新建)
      *
      * @param loginUser login user
      * @param projectName project name
@@ -116,7 +116,7 @@ public class ProcessDefinitionService extends BaseDAGService {
 
         Map<String, Object> result = new HashMap<>(5);
         Project project = projectMapper.queryByName(projectName);
-        // check project auth
+        // check project auth 权限校验
         Map<String, Object> checkResult = projectService.checkProjectAndAuth(loginUser, project, projectName);
         Status resultStatus = (Status) checkResult.get(Constants.STATUS);
         if (resultStatus != Status.SUCCESS) {
@@ -126,12 +126,14 @@ public class ProcessDefinitionService extends BaseDAGService {
         ProcessDefinition processDefine = new ProcessDefinition();
         Date now = new Date();
 
+        //参数校验
         ProcessData processData = JSONUtils.parseObject(processDefinitionJson, ProcessData.class);
         Map<String, Object> checkProcessJson = checkProcessNodeList(processData, processDefinitionJson);
         if (checkProcessJson.get(Constants.STATUS) != Status.SUCCESS) {
             return checkProcessJson;
         }
 
+        //信息入库
         processDefine.setName(name);
         processDefine.setReleaseState(ReleaseState.OFFLINE);
         processDefine.setProjectId(project.getId());
@@ -786,14 +788,14 @@ public class ProcessDefinitionService extends BaseDAGService {
                 return result;
             }
 
-            // check has cycle
+            // check has cycle 闭环检测
             if (graphHasCycle(taskNodes)) {
                 logger.error("process DAG has cycle");
                 putMsg(result, Status.PROCESS_NODE_HAS_CYCLE);
                 return result;
             }
 
-            // check whether the process definition json is normal
+            // check whether the process definition json is normal 检测
             for (TaskNode taskNode : taskNodes) {
                 if (!CheckUtils.checkTaskNodeParameters(taskNode.getParams(), taskNode.getType())) {
                     logger.error("task node {} parameter invalid", taskNode.getName());

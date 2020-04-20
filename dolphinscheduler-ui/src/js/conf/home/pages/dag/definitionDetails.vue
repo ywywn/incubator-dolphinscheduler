@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+<!--工作流定义详细信息页面-->
 <template>
   <div class="home-main index-model">
     <m-dag v-if="!isLoading" :type="'definition'" :release-state="releaseState"></m-dag>

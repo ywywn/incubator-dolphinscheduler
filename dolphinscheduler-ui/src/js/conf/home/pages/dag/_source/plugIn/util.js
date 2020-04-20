@@ -23,7 +23,9 @@ import store from '@/conf/home/store'
  * Node, to array
  */
 const rtTargetarrArr = (id) => {
+  // console.log(id)
   let ids = $(`#${id}`).attr('data-targetarr')
+  // console.log(ids)
   return ids ? ids.split(',') : []
 }
 

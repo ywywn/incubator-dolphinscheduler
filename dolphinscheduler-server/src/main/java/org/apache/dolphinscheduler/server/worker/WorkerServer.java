@@ -128,6 +128,7 @@ public class WorkerServer extends AbstractServer {
      * @param args arguments
      */
     public static void main(String[] args) {
+        System.setProperty("spring.profiles.active","worker");
         SpringApplication.run(WorkerServer.class,args);
     }
 

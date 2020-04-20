@@ -17,6 +17,7 @@
 <template>
   <div class="clearfix dag-model" >
     <div class="toolbar">
+      <!-- DAG界面左侧工具栏 -->
       <div class="title"><span>{{$t('Toolbar')}}</span></div>
       <div class="toolbar-btn">
         <div class="bar-box roundedRect jtk-draggable jtk-droppable jtk-endpoint-anchor jtk-connected"
@@ -25,15 +26,19 @@
              :key="v"
              v-for="(item,v) in tasksTypeList"
              @mousedown="_getDagId(v)">
+          <!-- taskTypeList 节点类型，拼接icos-' + v获取图标，:class动态获取icos图标-->
           <div data-toggle="tooltip" :title="item.description">
             <div class="icos" :class="'icos-' + v" ></div>
           </div>
         </div>
       </div>
     </div>
+    <!-- DAG画布 -->
     <div class="dag-contect">
+      <!-- DAG上部工具栏 -->
       <div class="dag-toolbar">
         <div class="assist-btn">
+          <!-- 查看变量 -->
           <x-button
                   style="vertical-align: middle;"
                   data-toggle="tooltip"
@@ -45,6 +50,7 @@
                   @click="_toggleView"
                   icon="ans-icon-code">
           </x-button>
+          <!-- 启动参数 -->
           <x-button
             style="vertical-align: middle;"
             data-toggle="tooltip"
@@ -58,9 +64,11 @@
           </x-button>
           <span class="name">{{name}}</span>
           &nbsp;
+          <!-- 上部工具栏->复制名称 -->
           <span v-if="name"  class="copy-name" @click="_copyName" :data-clipboard-text="name"><i class="ans-icon-copy" data-container="body"  data-toggle="tooltip" :title="$t('Copy name')" ></i></span>
         </div>
         <div class="save-btn">
+          <!-- 上部工具栏 -->
           <div class="operation" style="vertical-align: middle;">
             <a href="javascript:"
                v-for="(item,$index) in toolOperList"
@@ -71,6 +79,7 @@
               <i :class="item.icon" data-toggle="tooltip" :title="item.description" ></i>
             </a>
           </div>
+          <!-- 刷新DAG状态 -->
           <x-button
                   data-toggle="tooltip"
                   :title="$t('Refresh DAG status')"
@@ -92,6 +101,7 @@
                   @click="_rtNodesDag" >
             {{$t('Return_1')}}
           </x-button>
+          <!-- 保存 -->
           <x-button
                   style="vertical-align: middle;"
                   type="primary"
@@ -105,6 +115,7 @@
         </div>
       </div>
       <div class="scrollbar dag-container">
+        <!-- DAG画布 -->
         <div class="jtk-demo" id="jtk-demo">
           <div class="jtk-demo-canvas canvas-wide statemachine-demo jtk-surface jtk-surface-nopan jtk-draggable" id="canvas" ></div>
         </div>
@@ -127,7 +138,9 @@
   import disabledState from '@/module/mixin/disabledState'
   import { mapActions, mapState, mapMutations } from 'vuex'
 
+  // 抽屉,节点设置弹窗
   let eventModel
+  //mFormModel -> 节点设置
 
   export default {
     name: 'dag-chart',
@@ -155,14 +168,15 @@
     methods: {
       ...mapActions('dag', ['saveDAGchart', 'updateInstance', 'updateDefinition', 'getTaskState']),
       ...mapMutations('dag', ['addTasks', 'resetParams', 'setIsEditDag', 'setName']),
-      
+
+      //初始化，若任务实例不为空回显工作流，否则执行Dag.create
       init () {
         if (this.tasks.length) {
           Dag.backfill()
-          // Process instances can view status
+          // Process instances can view status 工作流实例查看状态
           if (this.type === 'instance') {
             this._getTaskState(false).then(res => {})
-            // Round robin acquisition status
+            // Round robin acquisition status 循环获取状态
             this.setIntervalP = setInterval(() => {
               this._getTaskState(true).then(res => {})
             }, 90000)
@@ -173,6 +187,7 @@
       },
       /**
        * copy name
+       * 上部工具栏->复制名称
        */
       _copyName(){
         let clipboard = new Clipboard(`.copy-name`)
@@ -189,10 +204,11 @@
         })
       },
       /**
-       * Get state interface
+       * Get state interface 任务示例中点击工作流实例所展示页面相关处理
        * @param isReset Whether to manually refresh
        */
       _getTaskState (isReset) {
+        //resolve和reject，用于结束Promise等待的函数，对应的状态分别是成功和失败
         return new Promise((resolve, reject) => {
           this.getTaskState(this.urlParam.id).then(res => {
             let data = res.list
@@ -201,12 +217,14 @@
             let idArr = allNodesId()
             const titleTpl = (item, desc) => {
               let $item = _.filter(taskList, v => v.name === item.name)[0]
+              //悬浮框展示信息
               return `<div style="text-align: left">${i18n.$t('Name')}：${$item.name}</br>${i18n.$t('State')}：${desc}</br>${i18n.$t('type')}：${$item.taskType}</br>${i18n.$t('host')}：${$item.host || '-'}</br>${i18n.$t('Retry Count')}：${$item.retryTimes}</br>${i18n.$t('Submit Time')}：${formatDate($item.submitTime)}</br>${i18n.$t('Start Time')}：${formatDate($item.startTime)}</br>${i18n.$t('End Time')}：${$item.endTime ? formatDate($item.endTime) : '-'}</br></div>`
             }
 
             // remove tip state dom
             $('.w').find('.state-p').html('')
 
+            //工作流节点回显
             data.forEach(v1 => {
               idArr.forEach(v2 => {
                 if (v2.name === v1.name) {
@@ -219,6 +237,7 @@
                 }
               })
             })
+            //节点执行状态
             if (state === 'PAUSE' || state === 'STOP' || state === 'FAILURE' || this.state === 'SUCCESS') {
               // Manual refresh does not regain large json
               if (isReset) {
@@ -238,6 +257,7 @@
         //   return
         // }
         this.dagBarId = v
+        // console.log(v)
       },
       /**
        * operating
@@ -260,7 +280,7 @@
           is = true
         }
 
-        // event type
+        // event type DAG上部工具栏
         Dag.toolbarEvent({
           item: item,
           code: code,
@@ -276,12 +296,12 @@
         // }
       },
       /**
-       * Storage interface
+       * Storage interface 工作流保存，与后台交互
        */
       _save (sourceType) {
         return new Promise((resolve, reject) => {
-          this.spinnerLoading = true
-          // Storage store
+          this.spinnerLoading = true // Loading
+          // Storage store 调用Dag.saveStore()，后执行then内方法
           Dag.saveStore().then(res => {
             if (this.urlParam.id) {
               /**
@@ -289,6 +309,8 @@
                * @param saveInstanceEditDAGChart => Process instance editing
                * @param saveEditDAGChart => Process definition editing
                */
+              //依据类型调用updateInstance或updateDefinition接口
+              // console.log(this)
               this[this.type === 'instance' ? 'updateInstance' : 'updateDefinition'](this.urlParam.id).then(res => {
                 this.$message.success(res.msg)
                 this.spinnerLoading = false
@@ -299,7 +321,7 @@
                 reject(e)
               })
             } else {
-              // New
+              // New 新建工作流保存，调用saveDAGchart接口
               this.saveDAGchart().then(res => {
                 this.$message.success(res.msg)
                 this.spinnerLoading = false
@@ -332,9 +354,11 @@
             className: 'v-modal-custom',
             transitionName: 'opacityp',
             render (h) {
+              //mUdp：保存DAG时的弹窗确认
               return h(mUdp, {
                 on: {
                   onUdp () {
+                    //校验后弹窗关闭
                     modal.remove()
                     resolve()
                   },
@@ -348,7 +372,7 @@
         })
       },
       /**
-       * Save chart
+       * Save chart 工作流保存，调用_save()
        */
       _saveChart () {
         // Verify node
@@ -440,6 +464,8 @@
 
         this.taskId = id
 
+        // 抽屉
+
         eventModel = this.$drawer({
           closable: false,
           direction: 'right',
@@ -499,7 +525,7 @@
             'Dot', { radius: 1, cssClass: 'dot-style' }
           ],
           Connector: 'Straight',
-          PaintStyle: { lineWidth: 2, stroke: '#456' }, // Connection style
+          PaintStyle: { lineWidth: 2, stroke: '#456' }, // Connection style 连接风格
           ConnectionOverlays: [
             [
               'Arrow',

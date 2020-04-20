@@ -1,22 +1,23 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Licensed to the Apache Software Foundation (ASF) under one or more
+* contributor license agreements.  See the NOTICE file distributed with
+* this work for additional information regarding copyright ownership.
+* The ASF licenses this file to You under the Apache License, Version 2.0
+* (the "License"); you may not use this file except in compliance with
+* the License.  You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+<!--当前节点设置页面-->
 <template>
   <div class="form-model-model" v-clickoutside="_handleClose">
-    <div class="title-box"> 
+    <div class="title-box">
       <span class="name">{{$t('Current node settings')}}</span>
       <span class="go-subtask">
         <!-- Component can't pop up box to do component processing -->
@@ -29,7 +30,8 @@
     </div>
     <div class="content-box" v-if="isContentBox">
       <div class="from-model">
-        <!-- Node name -->
+        <!-- 公用设置模板 -->
+        <!-- Node name 节点名称-->
         <div class="clearfix list">
           <div class="text-box"><span>{{$t('Node name')}}</span></div>
           <div class="cont-box">
@@ -47,7 +49,7 @@
           </div>
         </div>
 
-        <!-- Running sign -->
+        <!-- Running sign 运行标志 -->
         <div class="clearfix list">
           <div class="text-box"><span>{{$t('Run flag')}}</span></div>
           <div class="cont-box">
@@ -60,7 +62,7 @@
           </div>
         </div>
 
-        <!-- description -->
+        <!-- description 描述-->
         <div class="clearfix list">
           <div class="text-box">
             <span>{{$t('Description')}}</span>
@@ -80,7 +82,7 @@
           </div>
         </div>
 
-        <!-- Task priority -->
+        <!-- Task priority 任务优先级、worker分组-->
         <div class="clearfix list">
           <div class="text-box">
             <span>{{$t('Task priority')}}</span>
@@ -94,7 +96,7 @@
           </div>
         </div>
 
-        <!-- Number of failed retries -->
+        <!-- Number of failed retries 失败重试次数、失败重试间隔-->
         <div class="clearfix list" v-if="taskType !== 'SUB_PROCESS'">
           <div class="text-box">
             <span>{{$t('Number of failed retries')}}</span>
@@ -110,13 +112,14 @@
           </div>
         </div>
 
-        <!-- Task timeout alarm -->
+        <!-- Task timeout alarm 超时警告-->
         <m-timeout-alarm
           ref="timeout"
           :backfill-item="backfillItem"
           @on-timeout="_onTimeout">
         </m-timeout-alarm>
 
+        <!-- 私有设置模板，其中如m-shell为单独设置，可点击跳转查看各设置 -->
         <!-- shell node -->
         <m-shell
           v-if="taskType === 'SHELL'"
@@ -181,12 +184,20 @@
           ref="DEPENDENT"
           :backfill-item="backfillItem">
         </m-dependent>
+        <!-- dependent node -->
         <m-http
           v-if="taskType === 'HTTP'"
           @on-params="_onParams"
           ref="HTTP"
           :backfill-item="backfillItem">
         </m-http>
+        <!-- kafka node -->
+        <m-kafka
+          v-if="taskType === 'KAFKA'"
+          @on-params="_onParams"
+          ref="KAFKA"
+          :backfill-item="backfillItem">
+        </m-kafka>
 
       </div>
     </div>
@@ -212,6 +223,7 @@
   import mProcedure from './tasks/procedure'
   import mDependent from './tasks/dependent'
   import mHttp from './tasks/http'
+  import mKafka from './tasks/kafka'
   import mSubProcess from './tasks/sub_process'
   import mSelectInput from './_source/selectInput'
   import mTimeoutAlarm from './_source/timeoutAlarm'
@@ -314,12 +326,12 @@
           }
           this.store.dispatch('dag/getSubProcessId', { taskId: stateId }).then(res => {
             this.$emit('onSubProcess', {
-            subProcessId: res.data.subProcessInstanceId,
-            fromThis: this
-          })
-        }).catch(e => {
+              subProcessId: res.data.subProcessInstanceId,
+              fromThis: this
+            })
+          }).catch(e => {
             this.$message.error(e.msg || '')
-        })
+          })
         } else {
           this.$emit('onSubProcess', {
             subProcessId: this.backfillItem.params.processDefinitionId,
@@ -334,7 +346,7 @@
         this.params = Object.assign(this.params, {}, o)
       },
       /**
-       * verification name
+       * verification name 设置节点名称
        */
       _verifName () {
         if (!_.trim(this.name)) {
@@ -352,10 +364,10 @@
         return true
       },
       /**
-       * Global verification procedure
+       * Global verification procedure 节点参数校验
        */
       _verification () {
-        // Verify name
+        // Verify name 名称校验
         if (!this._verifName()) {
           return
         }
@@ -507,7 +519,8 @@
       mSelectInput,
       mTimeoutAlarm,
       mPriority,
-      mWorkerGroups
+      mWorkerGroups,
+      mKafka
     }
   }
 </script>

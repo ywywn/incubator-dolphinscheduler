@@ -52,8 +52,8 @@ public class ProcessDefinitionController extends BaseController{
     private ProcessDefinitionService processDefinitionService;
 
     /**
-     * create process definition
-     * 
+     * create process definition 创建工作流定义
+     *
      * @param loginUser login user
      * @param projectName project name
      * @param name process definition name
@@ -96,7 +96,7 @@ public class ProcessDefinitionController extends BaseController{
 
     /**
      * verify process definition name unique
-     * 
+     *
      * @param loginUser login user
      * @param projectName project name
      * @param name name
@@ -328,9 +328,9 @@ public class ProcessDefinitionController extends BaseController{
 
 
     /**
-     * 
+     *
      * get tasks list by process definition id
-     *  
+     *
      *
      * @param loginUser login user
      * @param projectName project name
