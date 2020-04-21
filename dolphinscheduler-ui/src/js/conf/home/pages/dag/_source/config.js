@@ -280,7 +280,10 @@ let tasksType = {
   'HTTP': {
     desc: 'HTTP',
     color: '#E46F13'
-  },
+  }
+}
+
+let kafkaType = {
   'KAFKA': {
     desc: 'KAFKA',
     color: '#646F13'
@@ -293,5 +296,6 @@ export {
   publishStatus,
   runningType,
   tasksState,
-  tasksType
+  tasksType,
+  kafkaType
 }

@@ -19,7 +19,10 @@
     <div class="toolbar">
       <!-- DAG界面左侧工具栏 -->
       <div class="title"><span>{{$t('Toolbar')}}</span></div>
-      <div class="toolbar-btn">
+      <div>
+        <i class="title-tmp" :class="showContent ? 'ans-icon-arrow-down' : 'ans-icon-arrow-right'" @click="showTaskNode"><span>本地</span></i>
+      </div>
+      <div class="toolbar-btn" v-show="showContent">
         <div class="bar-box roundedRect jtk-draggable jtk-droppable jtk-endpoint-anchor jtk-connected"
              :class="v === dagBarId ? 'active' : ''"
              :id="v"
@@ -32,6 +35,24 @@
           </div>
         </div>
       </div>
+
+      <div>
+        <i class="title-tmp" :class="showKafkaContent ? 'ans-icon-arrow-down' : 'ans-icon-arrow-right'" @click="showKafkaNode"><span>测试</span></i>
+      </div>
+      <div class="toolbar-btn" v-show="showKafkaContent">
+        <div class="bar-box roundedRect jtk-draggable jtk-droppable jtk-endpoint-anchor jtk-connected"
+             :class="v === dagBarId ? 'active' : ''"
+             :id="v"
+             :key="v"
+             v-for="(item,v) in kafkaTypeList"
+             @mousedown="_getDagId(v)">
+          <!-- taskTypeList 节点类型，拼接icos-' + v获取图标，:class动态获取icos图标-->
+          <div data-toggle="tooltip" :title="item.description">
+            <div class="icos" :class="'icos-' + v" ></div>
+          </div>
+        </div>
+      </div>
+
     </div>
     <!-- DAG画布 -->
     <div class="dag-contect">
@@ -131,7 +152,7 @@
   import { jsPlumb } from 'jsplumb'
   import Clipboard from 'clipboard'
   import { allNodesId } from './plugIn/util'
-  import { toolOper, tasksType } from './config'
+  import { toolOper, tasksType, kafkaType } from './config'
   import mFormModel from './formModel/formModel'
   import { formatDate } from '@/module/filter/filter'
   import { findComponentDownward } from '@/module/util/'
@@ -146,7 +167,10 @@
     name: 'dag-chart',
     data () {
       return {
+        showContent: false,
+        showKafkaContent: false,
         tasksTypeList: tasksType,
+        kafkaTypeList: kafkaType,
         toolOperList: toolOper(this),
         dagBarId: null,
         toolOperCode: '',
@@ -258,6 +282,12 @@
         // }
         this.dagBarId = v
         // console.log(v)
+      },
+      showTaskNode(){
+        this.showContent = !this.showContent
+      },
+      showKafkaNode(){
+        this.showKafkaContent = !this.showKafkaContent
       },
       /**
        * operating

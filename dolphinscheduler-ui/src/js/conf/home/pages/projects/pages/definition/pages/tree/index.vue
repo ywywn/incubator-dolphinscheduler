@@ -47,7 +47,16 @@
               <span>{{v}}</span>
             </a>
           </div>
-          <div class="state-tasks-color-sp">
+          <div class="toolbar-color-sp">
+            <a href="javascript:">
+              <span>Kafka Type</span>
+            </a>
+            <a href="javascript:" v-for="(k,v) in kafkaType" :key="v">
+              <i class="ans-icon-circle-solid" :style="{color:k.color}"></i>
+              <span>{{v}}</span>
+            </a>
+          </div>
+          <div class="state-tasks-color-sp" style="padding-top: 12px">
             <a href="javascript:">
               <span>{{$t('Task Status')}}</span>
             </a>
@@ -76,7 +85,7 @@
   import { uuid } from '@/module/util'
   import mSpin from '@/module/components/spin/spin'
   import mNoData from '@/module/components/noData/noData'
-  import { tasksType, tasksState } from '@/conf/home/pages/dag/_source/config'
+  import { tasksType, tasksState, kafkaType } from '@/conf/home/pages/dag/_source/config'
   import mSecondaryMenu from '@/module/components/secondaryMenu/secondaryMenu'
   import mListConstruction from '@/module/components/listConstruction/listConstruction'
 
@@ -90,6 +99,7 @@
         isLoading: true,
         // node type
         tasksType: tasksType,
+        kafkaType: kafkaType,
         // node state
         tasksState: tasksState,
         // tree data
@@ -207,7 +217,7 @@
     .tree-limit-select {
       position: absolute;
       right: 20px;
-      top: 22px;
+      top: 0px;
       z-index: 1;
     }
     .tasks-color {
@@ -217,7 +227,7 @@
       position: relative;
       padding-bottom: 10px;
       .toolbar-color-sp {
-        padding: 12px 0;
+        padding: 12px 0 0 0;
       }
 
     }
