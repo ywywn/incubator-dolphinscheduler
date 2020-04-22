@@ -85,7 +85,7 @@
   import { uuid } from '@/module/util'
   import mSpin from '@/module/components/spin/spin'
   import mNoData from '@/module/components/noData/noData'
-  import { tasksType, tasksState, kafkaType } from '@/conf/home/pages/dag/_source/config'
+  import { kafkaType, tasksState, treeTasksType, tasksType } from '@/conf/home/pages/dag/_source/config'
   import mSecondaryMenu from '@/module/components/secondaryMenu/secondaryMenu'
   import mListConstruction from '@/module/components/listConstruction/listConstruction'
 
@@ -99,6 +99,7 @@
         isLoading: true,
         // node type
         tasksType: tasksType,
+        treeTasksType: treeTasksType,
         kafkaType: kafkaType,
         // node state
         tasksState: tasksState,

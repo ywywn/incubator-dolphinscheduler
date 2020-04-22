@@ -27,6 +27,7 @@ import org.apache.dolphinscheduler.common.task.python.PythonParameters;
 import org.apache.dolphinscheduler.common.task.shell.ShellParameters;
 import org.apache.dolphinscheduler.common.task.spark.SparkParameters;
 import org.apache.dolphinscheduler.common.task.sql.SqlParameters;
+import org.apache.dolphinscheduler.common.task.kafka.KafkaParameters;
 import org.apache.dolphinscheduler.common.task.subprocess.SubProcessParameters;
 import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;
@@ -69,6 +70,8 @@ public class TaskParametersUtils {
           return JSONUtils.parseObject(parameter, FlinkParameters.class);
         case HTTP:
           return JSONUtils.parseObject(parameter, HttpParameters.class);
+        case KAFKA:
+          return JSONUtils.parseObject(parameter, KafkaParameters.class);
         default:
           return null;
       }

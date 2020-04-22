@@ -152,7 +152,7 @@
   import { jsPlumb } from 'jsplumb'
   import Clipboard from 'clipboard'
   import { allNodesId } from './plugIn/util'
-  import { toolOper, tasksType, kafkaType } from './config'
+  import { toolOper, tasksType, kafkaType, treeTasksType } from './config'
   import mFormModel from './formModel/formModel'
   import { formatDate } from '@/module/filter/filter'
   import { findComponentDownward } from '@/module/util/'

@@ -17,7 +17,7 @@
 
 import * as d3 from 'd3'
 import { rtInstancesTooltip, rtCountMethod } from './util'
-import { tasksType, tasksState } from '@/conf/home/pages/dag/_source/config'
+import { tasksState, treeTasksType } from '@/conf/home/pages/dag/_source/config'
 
 let self = this
 
@@ -175,7 +175,7 @@ Tree.prototype.treeUpdate = function (source) {
       .attr('title', d => d.type ? d.type : '')
       .attr('height', this.config.barHeight)
       .attr('width', d => this.config.barWidth - d.y)
-      .style('fill', d => d.type ? tasksType[d.type].color : '#fff')
+      .style('fill', d => d.type ? treeTasksType[d.type].color : '#fff')
       .attr('task_id', d => d.name)
       .on('click', this.treeToggles)
 

@@ -290,6 +290,52 @@ let kafkaType = {
   }
 }
 
+let treeTasksType = {
+  'SHELL': {
+    desc: 'SHELL',
+    color: '#646464'
+  },
+  'SUB_PROCESS': {
+    desc: 'SUB_PROCESS',
+    color: '#0097e0'
+  },
+  'PROCEDURE': {
+    desc: 'PROCEDURE',
+    color: '#525CCD'
+  },
+  'SQL': {
+    desc: 'SQL',
+    color: '#7A98A1'
+  },
+  'SPARK': {
+    desc: 'SPARK',
+    color: '#E46F13'
+  },
+  'FLINK': {
+    desc: 'FLINK',
+    color: '#E46F13'
+  },
+  'MR': {
+    desc: 'MapReduce',
+    color: '#A0A5CC'
+  },
+  'PYTHON': {
+    desc: 'PYTHON',
+    color: '#FED52D'
+  },
+  'DEPENDENT': {
+    desc: 'DEPENDENT',
+    color: '#2FBFD8'
+  },
+  'HTTP': {
+    desc: 'HTTP',
+    color: '#E46F13'
+  },
+  'KAFKA': {
+    desc: 'KAFKA',
+    color: '#646F13'
+  }
+}
 
 export {
   toolOper,
@@ -297,5 +343,6 @@ export {
   runningType,
   tasksState,
   tasksType,
-  kafkaType
+  kafkaType,
+  treeTasksType
 }
