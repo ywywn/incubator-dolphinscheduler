@@ -25,6 +25,7 @@
           <template slot="history"><a href="javascript:" @click="_seeHistory" ><i class="ansicon ans-icon-timer"></i><em>{{$t('View history')}}</em></a></template>
           <template slot="log"><a href="javascript:"><i class="ansicon ans-icon-log"></i><em>{{$t('View log')}}</em></a></template>
         </m-log>
+        <!--进入该子节点-->
         <a href="javascript:" @click="_goSubProcess" v-if="_isGoSubProcess"><i class="ansicon ans-icon-node"></i><em>{{$t('Enter this child node')}}</em></a>
       </span>
     </div>
@@ -32,6 +33,7 @@
       <div class="from-model">
         <!-- 公用设置模板 -->
         <!-- Node name 节点名称-->
+        <!-- <div class="clearfix list" v-show="taskType === KAFKA"> 可屏蔽部分共用模板-->
         <div class="clearfix list">
           <div class="text-box"><span>{{$t('Node name')}}</span></div>
           <div class="cont-box">

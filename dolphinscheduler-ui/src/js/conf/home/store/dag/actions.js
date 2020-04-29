@@ -234,6 +234,7 @@ export default {
   },
   /**
    * Get a list of process definitions (sub-workflow usage is not paged)
+   * 工作流定义list 数据返回接口
    */
   getProcessList ({ state }, payload) {
     return new Promise((resolve, reject) => {
@@ -243,6 +244,7 @@ export default {
       }
       io.get(`projects/${state.projectName}/process/list`, payload, res => {
         state.processListS = res.data
+        // console.log(state.processListS)
         resolve(res.data)
       }).catch(res => {
         reject(res)

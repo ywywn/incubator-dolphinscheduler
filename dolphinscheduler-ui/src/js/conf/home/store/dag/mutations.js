@@ -117,8 +117,11 @@ export default {
   /**
    * add task
    * object {}
+   * DAG task缓存（确认添加后更新），state 当前画布全部task info，payload 新增task info
    */
   addTasks (state, payload) {
+    let tasksTmp = state.tasks
+    console.log(tasksTmp)
     let i = _.findIndex(state.tasks, v => v.id === payload.id)
     if (i !== -1) {
       state.tasks[i] = Object.assign(state.tasks[i], {}, payload)
@@ -132,5 +135,9 @@ export default {
       x: parseInt(dom.css('left'), 10),
       y: parseInt(dom.css('top'), 10)
     })
+    console.log(payload)
+    let stateTmp = state
+    stateTmp['tasksTmp'] = state.tasks
+    console.log(stateTmp)
   }
 }
