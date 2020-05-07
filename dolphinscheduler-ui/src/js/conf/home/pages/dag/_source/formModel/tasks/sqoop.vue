@@ -23,7 +23,8 @@
         <x-select
                 style="width: 130px;"
                 v-model="modelType"
-                :disabled="isDetails">
+                :disabled="isDetails"
+                @on-change="_handleModelTypeChange">
           <x-option
                   v-for="city in modelTypeList"
                   :key="city.code"
@@ -534,12 +535,6 @@
         sourceTypeList:[
           {
             code:"MYSQL"
-          },
-          {
-            code:"HDFS"
-          },
-          {
-            code:"HIVE"
           }
           ],
 
@@ -656,6 +651,62 @@
             ]
             break;
           default:
+            // this.targetTypeList = [
+            //   {
+            //     code:"HIVE"
+            //   },
+            //   {
+            //     code:"HDFS"
+            //   }
+            // ]
+            break;
+        }
+      },
+
+      _handleModelTypeChange(a){
+        this._getSourceTypeList(a.label)
+        this.sourceType = this.sourceTypeList[0].code
+        this._handleSourceTypeChange(this.sourceType)
+      },
+
+      _getSourceTypeList(data){
+        switch(data){
+          case 'export':
+            this.sourceTypeList = [
+              {
+                code:"HIVE"
+              },
+              {
+                code:"HDFS"
+              }
+            ]
+            this.targetTypeList = [
+              {
+                code:"MYSQL"
+              }
+            ]
+            break;
+          case 'import':
+            this.sourceTypeList = [
+              {
+                code:"MYSQL"
+              }
+            ]
+            this.targetTypeList = [
+              {
+                code:"HIVE"
+              },
+              {
+                code:"HDFS"
+              }
+            ]
+            break;
+          default:
+            this.sourceTypeList = [
+              {
+                code:"MYSQL"
+              }
+            ]
             this.targetTypeList = [
               {
                 code:"HIVE"
