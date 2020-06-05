@@ -18,7 +18,10 @@ package org.apache.dolphinscheduler.api.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.dolphinscheduler.api.dto.resources.ResourceComponent;
+import org.apache.dolphinscheduler.api.dto.resources.visitor.ResourceTreeVisitor;
 import org.apache.dolphinscheduler.api.enums.Status;
+import org.apache.dolphinscheduler.api.exceptions.ServiceException;
 import org.apache.dolphinscheduler.api.utils.CheckUtils;
 import org.apache.dolphinscheduler.api.utils.PageInfo;
 import org.apache.dolphinscheduler.api.utils.Result;
@@ -35,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -334,18 +338,18 @@ public class UsersService extends BaseService {
                         List<Resource> fileResourcesList = resourceMapper.queryResourceList(
                                 null, userId, ResourceType.FILE.ordinal());
                         if (CollectionUtils.isNotEmpty(fileResourcesList)) {
-                            for (Resource resource : fileResourcesList) {
-                                HadoopUtils.getInstance().copy(oldResourcePath + "/" + resource.getAlias(), newResourcePath, false, true);
-                            }
+                            ResourceTreeVisitor resourceTreeVisitor = new ResourceTreeVisitor(fileResourcesList);
+                            ResourceComponent resourceComponent = resourceTreeVisitor.visit();
+                            copyResourceFiles(resourceComponent, oldResourcePath, newResourcePath);
                         }
 
                         //udf resources
                         List<Resource> udfResourceList = resourceMapper.queryResourceList(
                                 null, userId, ResourceType.UDF.ordinal());
                         if (CollectionUtils.isNotEmpty(udfResourceList)) {
-                            for (Resource resource : udfResourceList) {
-                                HadoopUtils.getInstance().copy(oldUdfsPath + "/" + resource.getAlias(), newUdfsPath, false, true);
-                            }
+                            ResourceTreeVisitor resourceTreeVisitor = new ResourceTreeVisitor(udfResourceList);
+                            ResourceComponent resourceComponent = resourceTreeVisitor.visit();
+                            copyResourceFiles(resourceComponent, oldUdfsPath, newUdfsPath);
                         }
 
                         //Delete the user from the old tenant directory
@@ -511,7 +515,7 @@ public class UsersService extends BaseService {
         if (CollectionUtils.isNotEmpty(oldAuthorizedResIds)) {
 
             // get all resource id of process definitions those is released
-            List<Map<String, Object>> list = processDefinitionMapper.listResources();
+            List<Map<String, Object>> list = processDefinitionMapper.listResourcesByUser(userId);
             Map<Integer, Set<Integer>> resourceProcessMap = ResourceProcessDefinitionUtils.getResourceProcessDefinitionMap(list);
             Set<Integer> resourceIdSet = resourceProcessMap.keySet();
 
@@ -864,5 +868,41 @@ public class UsersService extends BaseService {
         }
 
         return msg;
+    }
+
+    /**
+     * copy resource files
+     * @param resourceComponent resource component
+     * @param srcBasePath       src base path
+     * @param dstBasePath       dst base path
+     * @throws IOException      io exception
+     */
+    private void copyResourceFiles(ResourceComponent resourceComponent, String srcBasePath, String dstBasePath) throws IOException {
+        List<ResourceComponent> components = resourceComponent.getChildren();
+
+        if (CollectionUtils.isNotEmpty(components)) {
+            for (ResourceComponent component:components) {
+                // verify whether exist
+                if (!HadoopUtils.getInstance().exists(String.format("%s/%s",srcBasePath,component.getFullName()))){
+                    logger.error("resource file: {} not exist,copy error",component.getFullName());
+                    throw new ServiceException(Status.RESOURCE_NOT_EXIST);
+                }
+
+                if (!component.isDirctory()) {
+                    // copy it to dst
+                    HadoopUtils.getInstance().copy(String.format("%s/%s",srcBasePath,component.getFullName()),String.format("%s/%s",dstBasePath,component.getFullName()),false,true);
+                    continue;
+                }
+
+                if(CollectionUtils.isEmpty(component.getChildren())) {
+                    // if not exist,need create it
+                    if (!HadoopUtils.getInstance().exists(String.format("%s/%s",dstBasePath,component.getFullName()))) {
+                        HadoopUtils.getInstance().mkdir(String.format("%s/%s",dstBasePath,component.getFullName()));
+                    }
+                }else{
+                    copyResourceFiles(component,srcBasePath,dstBasePath);
+                }
+            }
+        }
     }
 }

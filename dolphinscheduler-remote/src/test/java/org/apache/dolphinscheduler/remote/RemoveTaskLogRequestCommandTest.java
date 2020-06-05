@@ -13,8 +13,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
-SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
-SET FOREIGN_KEY_CHECKS=0;
-UPDATE t_ds_resources SET pid=-1,is_directory=false WHERE pid IS NULL;
-UPDATE t_ds_resources SET full_name = concat('/',alias) WHERE pid=-1 and full_name IS NULL;
+ */
+
+package org.apache.dolphinscheduler.remote;
+
+import junit.framework.Assert;
+import org.apache.dolphinscheduler.remote.command.Command;
+import org.apache.dolphinscheduler.remote.command.log.RemoveTaskLogRequestCommand;
+import org.apache.dolphinscheduler.remote.command.log.RemoveTaskLogResponseCommand;
+import org.junit.Test;
+
+public class RemoveTaskLogRequestCommandTest {
+
+    @Test
+    public void testConvert2Command(){
+        RemoveTaskLogResponseCommand removeTaskLogResponseCommand = new RemoveTaskLogResponseCommand();
+        removeTaskLogResponseCommand.setStatus(true);
+        Command command = removeTaskLogResponseCommand.convert2Command(122);
+        Assert.assertNotNull(command);
+    }
+}
